@@ -1,7 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const session = require('express-session');
-const RedisStore = require('connect-redis').default;
+const connectRedis = require('connect-redis');
+const RedisStore = connectRedis.RedisStore;
 const { createClient } = require('redis');
 const passport = require('passport');
 const { sequelize } = require('./db');
