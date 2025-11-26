@@ -41,8 +41,10 @@ onMounted(fetchApps);
           <h1 class="text-2xl font-bold text-gray-800">App Directory</h1>
         </div>
         <div class="flex items-center gap-4">
-          <span class="text-gray-600 hidden sm:block">Welcome, {{ authStore.user?.displayName || 'User' }}</span>
-          <router-link to="/admin" class="text-gray-600 hover:text-blue-600 font-medium transition-colors">Admin</router-link>
+          <router-link to="/profile" class="text-gray-600 hover:text-blue-600 font-medium transition-colors hidden sm:block">
+            Welcome, {{ authStore.user?.family_name || 'User' }}
+          </router-link>
+          <router-link v-if="authStore.isAdmin" to="/admin" class="text-gray-600 hover:text-blue-600 font-medium transition-colors">Admin</router-link>
           <button @click="authStore.logout" class="text-gray-600 hover:text-red-600 font-medium transition-colors">Logout</button>
         </div>
       </div>

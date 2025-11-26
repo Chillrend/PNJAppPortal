@@ -4,13 +4,7 @@ import { ref, watch } from 'vue';
 const props = defineProps({
   initialData: {
     type: Object,
-    default: () => ({
-      title: '',
-      description: '',
-      url: '',
-      logo: '',
-      category: 'General'
-    })
+    default: () => ({})
   },
   isEditing: {
     type: Boolean,
@@ -20,11 +14,19 @@ const props = defineProps({
 
 const emit = defineEmits(['submit', 'cancel']);
 
-const formData = ref({ ...props.initialData });
+const defaultForm = {
+  title: '',
+  description: '',
+  url: '',
+  logo: '',
+  category: 'General'
+};
+
+const formData = ref({ ...defaultForm, ...props.initialData });
 
 watch(() => props.initialData, (newVal) => {
-  formData.value = { ...newVal };
-});
+  formData.value = { ...defaultForm, ...newVal };
+}, { deep: true });
 
 const handleSubmit = () => {
   emit('submit', formData.value);

@@ -41,14 +41,18 @@ app.use(session({
 // Passport
 app.use(passport.initialize());
 app.use(passport.session());
-require('./config/passport')(passport);
+// Passport Config
+const passportConfig = require('./config/passport');
 
 // Routes
 app.use('/auth', require('./routes/auth'));
 app.use('/api/apps', require('./routes/apps'));
 
 // Sync DB and Start Server
-sequelize.sync().then(() => {
+sequelize.sync().then(async () => {
+    // Initialize Passport Config (Async for OIDC Discovery)
+    await passportConfig(passport);
+
     app.listen(PORT, () => {
         console.log(`Server running on http://localhost:${PORT}`);
     });

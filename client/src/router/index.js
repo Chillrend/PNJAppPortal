@@ -22,7 +22,13 @@ const router = createRouter({
             path: '/admin',
             name: 'Admin',
             component: Admin,
-            meta: { requiresAuth: true } // In real app, check for admin role
+            meta: { requiresAuth: true, requiresAdmin: true }
+        },
+        {
+            path: '/profile',
+            name: 'Profile',
+            component: () => import('../views/Profile.vue'),
+            meta: { requiresAuth: true }
         }
     ]
 });
@@ -33,8 +39,21 @@ router.beforeEach(async (to, from, next) => {
         await authStore.fetchUser();
     }
 
+    console.log('Router navigation:', {
+        to: to.path,
+        requiresAuth: to.meta.requiresAuth,
+        requiresAdmin: to.meta.requiresAdmin,
+        user: authStore.user,
+        isAdmin: authStore.isAdmin
+    });
+
     if (to.meta.requiresAuth && !authStore.user) {
+        console.log('Redirecting to /login - user not authenticated');
         next('/login');
+    } else if (to.meta.requiresAdmin && !authStore.isAdmin) {
+        console.warn('Access denied to admin page - user is not an admin');
+        alert('Access Denied: You do not have admin privileges. Please contact your administrator.');
+        next('/');
     } else if (to.path === '/login' && authStore.user) {
         next('/');
     } else {
